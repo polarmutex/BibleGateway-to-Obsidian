@@ -1,4 +1,3 @@
-#!/bin/bash
 #----------------------------------------------------------------------------------
 # This script runs Jonathan clark's bg2md.rb ruby script and formats the output
 # to be useful in Obsidian. Find the script here: https://github.com/jgclark/BibleGateway-to-Markdown
@@ -52,7 +51,7 @@ do
 		i) verbose="true" ;;
 		c) breadcrumbs_inline="true" ;;
 		y) breadcrumbs_yaml="true" ;;
-		h|?) usage ;; 
+		h|?) usage ;;
 	esac
 done
 
@@ -79,7 +78,7 @@ declare -a lengtharray # Declaring amount of chapters in each book
 # -------------------------------------------
 # For Translation, translate these three lists. Seperated by space and wrapped in quotes if they include whitespace.
 # Name of "The Bible" in your language
-biblename="The Bible"
+biblename="The_Bible"
 # Full names of the books of the Bible
 bookarray=(Genesis Exodus Leviticus Numbers Deuteronomy Joshua Judges Ruth "1 Samuel" "2 Samuel" "1 Kings" "2 Kings" "1 Chronicles" "2 Chronicles" Ezra Nehemiah Esther Job Psalms Proverbs Ecclesiastes "Song of Solomon" Isaiah Jeremiah Lamentations Ezekiel Daniel Hosea Joel Amos Obadiah Jonah Micah Nahum Habakkuk Zephaniah Haggai Zechariah Malachi Matthew Mark Luke John Acts
 Romans "1 Corinthians" "2 Corinthians" Galatians Ephesians Philippians Colossians "1 Thessalonians" "2 Thessalonians" "1 Timothy" "2 Timothy" Titus Philemon Hebrews James "1 Peter" "2 Peter" "1 John" "2 John" "3 John" Jude Revelation)
@@ -175,7 +174,7 @@ filename=${export_prefix}$chapter # Setting the filename
   elif [[ $boldwords = "false" && $headers = "true" ]] ; then
     text=$(ruby bg2md.rb -e -c -f -l -r -v "${translation}" "${book} ${chapter}") # This calls the 'bg2md_mod' script
   else
-    text=$(ruby bg2md.rb -e -c -f -l -r -v "${translation}" "${book} ${chapter}") # This calls the 'bg2md_mod' script
+    text=$(ruby BibleGateway-to-Markdown/bg2md.rb -e -c -f -l -r -v "${translation}" "${book} ${chapter}") # This calls the 'bg2md_mod' script
   fi
 
 
@@ -222,7 +221,7 @@ alias="Aliases: [${book} ${chapter}]" # Add other aliases or 'Tags:' here if des
     elif [ ${aliases} == "false" ] && [ ${breadcrumbs_yaml} == "true" ]; then
     yaml="${yaml_start}${bc_yaml}${yaml_end}"
   fi
-  
+
 
   export="${yaml}${export}"
   # Export
@@ -233,7 +232,7 @@ alias="Aliases: [${book} ${chapter}]" # Add other aliases or 'Tags:' here if des
   folder_name="${book}" # Setting the folder name
 
   # Creating a folder for the book of the Bible if it doesn't exist, otherwise moving new file into existing folder
-  mkdir -p "./${biblename} (${translation})/${folder_name}"; mv "${filename}".md "./${biblename} (${translation})/${folder_name}"
+  mkdir -p "./${biblename}_${translation}/${folder_name}"; mv "${filename}".md "./${biblename}_${translation}/${folder_name}"
 
 
 done # End of the book exporting loop
@@ -241,7 +240,7 @@ done # End of the book exporting loop
   # Create an overview file for each book of the Bible:
   overview_file="links: [[${biblename}]]\n# ${book}\n\n[Start Reading →]([[${abbreviation} 1]])"
   echo -e $overview_file >> "$book.md"
-  mv "$book.md" "./${biblename} (${translation})/${folder_name}"
+  mv "$book.md" "./${biblename}_${translation}/${folder_name}"
 
   # Append the bookname to "The Bible" file
   echo -e "* [[${book}]]" >> "${biblename}.md"
