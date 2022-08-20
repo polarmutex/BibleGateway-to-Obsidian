@@ -3,3 +3,10 @@ Previous_versions/
 bg2md.rb
 Scripture (***)/
 The Bible.md
+.direnv
+.nix-gems/cache
+.nix-gems/doc
+.nix-gems/gems
+.nix-gems/specifications/clipboard-1.3.6.gemspec
+.nix-gems/specifications/colorize-0.8.1.gemspec
+.nix-gems/specifications/optparse-0.2.0.gemspec
