@@ -43,12 +43,12 @@ show_help()
 }
 
 # Clear version variable if it exists and set defaults for others
-ARG_VERSION="WEB"        # Which version to use from BibleGateway.com
+ARG_VERSION="ESV"        # Which version to use from BibleGateway.com
 ARG_ABBR_SHORT="false"   # Use shorter book abbreviations
-ARG_BOLD_WORDS="false"   # Set words of Jesus in bold
-ARG_HEADERS="false"      # Include editorial headers
-ARG_ALIASES="false"      # Create an alias in the YAML front matter for each chapter title
-ARG_VERBOSE="false"      # Show download progress for each chapter
+ARG_BOLD_WORDS="true"   # Set words of Jesus in bold
+ARG_HEADERS="true"      # Include editorial headers
+ARG_ALIASES="true"      # Create an alias in the YAML front matter for each chapter title
+ARG_VERBOSE="true"      # Show download progress for each chapter
 ARG_BC_INLINE="false"    # Print breadcrumbs in the file
 ARG_BC_YAML="false"      # Print breadcrumbs in the YAML
 ARG_LANGUAGE="en"        # Which language translation to for file names, links, and titles
@@ -98,7 +98,7 @@ done <"$translation_folder/books.txt"
 
 # TRANSLATION: Abbreviated book names
 declare -a abbr_array
-if [[ $ARG_ABBR_SHORT == "true" ]]; then
+if [[publish: falseARG_ABBR_SHORT == "true" ]]; then
   ABBR_FILE="booksAbbrShort.txt"
 else
   ABBR_FILE="booksAbbr.txt"
@@ -218,7 +218,7 @@ for ((book_index=0; book_index<66; book_index++)); do
     fi
 
     # Use the bg2md script to read chapter contents
-    chapter_content=$(ruby bg2md.rb $bg2md_flags -v $ARG_VERSION $book $chapter)
+    chapter_content=$(ruby BibleGateway-to-Markdown/bg2md.rb $bg2md_flags -v $ARG_VERSION $book $chapter)
 
     # Delete unwanted headers from chapter content
     chapter_content=$(echo $chapter_content | sed 's/^(.*?)v1/v1/')
@@ -271,11 +271,19 @@ for ((book_index=0; book_index<66; book_index++)); do
       if $ARG_BC_YAML -eq "true"; then
         yaml="$yaml$bc_yaml"
       fi
+      yaml="$yaml\npublish: false"
       yaml="$yaml\n---\n"
 
       # Add YAML to export
       chapter_content="$yaml$chapter_content"
     fi
+
+    yaml="---"
+    yaml="$yaml\nAliases: [$book $chapter]"
+    yaml="$yaml\ncssClass: bvh6custom"
+    yaml="$yaml\n---\n"
+    # Add YAML to export
+    chapter_content="$yaml$chapter_content"
 
     # Create a new file for this chapter
     echo -e $chapter_content > "$this_file.md"
